@@ -1,0 +1,5 @@
+ - hosts: AWS
+   become: yes
+   roles:
+     - BASE
+     - APPLICATION

@@ -1,0 +1,35 @@
+---
+- name: upgrade all packages, excluding kernel & foo related packages
+  yum:
+    name: '*'
+    state: latest
+    exclude: kernel*,foo*
+
+- name: Instalando pip
+  yum:
+    name: python-pip
+    state: latest
+
+- name: Instalando git
+  yum:
+    name: git
+    state: latest
+
+- name: Instalando docker
+  command: sudo amazon-linux-extras install docker -y
+
+- name: iniciando serviço do docker
+  command: service docker start
+
+- name: Adicionando usuário ec2-user ao grupo docker
+  command: usermod -a -G docker ec2-user
+
+- name: Instalando docker-compose
+  shell: curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+- name: Dando permissão ao executavel do docker-compose
+  command: chmod +x /usr/local/bin/docker-compose
+
+- name: Adicionando link simbólico do docker-compose
+  command: sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+  ignore_errors: yes

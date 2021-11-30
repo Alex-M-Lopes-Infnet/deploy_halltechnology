@@ -1,0 +1,10 @@
+---
+- name: Clonando o repositório do projeto
+  ansible.builtin.git:
+    repo: 'https://github.com/Alex-M-Lopes-Infnet/-halltechnology.com-.git'
+    dest: /home/ec2-user/halltechnology
+
+- name: Subindo a aplicação
+  command: sudo docker-compose -f /home/ec2-user/halltechnology/docker-compose.yml up --build -d
+  args:
+    chdir: /home/ec2-user/halltechnology/
