@@ -1,4 +1,4 @@
 ---
 - name: Executando script de criação do ambiente na AWS
-  shell: /home/alex/Projetos/ecommerce/roles/AWS/tasks/AWS_Ambiente.sh
+  shell: /home/alex/Projetos/deploy_halltechnology/roles/AWS/tasks/AWS_Ambiente.sh
   register: result

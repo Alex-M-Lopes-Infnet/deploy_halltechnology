@@ -148,13 +148,13 @@ echo ''
 echo '#################################### CRIANDO INSTÂNCIAS ####################################'
 
 #Criando Instância App01
-app01=$(aws ec2 run-instances --image-id ami-04902260ca3d33422 --count 1 --instance-type t2.micro --key-name AWS_Key --security-group-ids $app_srv_sg --subnet-id $subnet_privada_a --associate-public-ip-address | grep InstanceId | cut -f 4 -d '"')
+app01=$(aws ec2 run-instances --image-id ami-04902260ca3d33422 --count 1 --instance-type t2.micro --key-name key_projeto --security-group-ids $app_srv_sg --subnet-id $subnet_privada_a --associate-public-ip-address | grep InstanceId | cut -f 4 -d '"')
 aws ec2 create-tags --resources $app01 --tags Key=Name,Value=App01
 aws ec2 describe-instances --filters "Name=tag:Name,Values=App01" | grep PublicIpAddress | cut -f 4 -d '"' >> /home/alex/Projetos/ecommerce/hosts
 echo Instância App01 Criada
 
 #Criando Instância App02
-app02=$(aws ec2 run-instances --image-id ami-04902260ca3d33422 --count 1 --instance-type t2.micro --key-name AWS_Key --security-group-ids $app_srv_sg --subnet-id $subnet_privada_b --associate-public-ip-address | grep InstanceId | cut -f 4 -d '"')
+app02=$(aws ec2 run-instances --image-id ami-04902260ca3d33422 --count 1 --instance-type t2.micro --key-name key_projeto --security-group-ids $app_srv_sg --subnet-id $subnet_privada_b --associate-public-ip-address | grep InstanceId | cut -f 4 -d '"')
 aws ec2 create-tags --resources $app02 --tags Key=Name,Value=App02
 aws ec2 describe-instances --filters "Name=tag:Name,Values=App02" | grep PublicIpAddress | cut -f 4 -d '"' >> /home/alex/Projetos/ecommerce/hosts
 echo Instância App02 Criada
