@@ -127,9 +127,9 @@ load_balancer_sg=$(aws ec2 create-security-group --group-name "SG_Load_Balancer"
 aws ec2 create-tags --resources $load_balancer_sg --tags Key=Name,Value=SG_Load_Balancer
 echo Criado Security Group para o Load Balancer
 
-#Liberando porta 8000
-null=$(aws ec2 authorize-security-group-ingress --group-id $load_balancer_sg --protocol tcp --port 8000 --cidr 0.0.0.0/0)
-echo Liberada a porta 8000 vinda da internet
+#Liberando porta 80
+null=$(aws ec2 authorize-security-group-ingress --group-id $load_balancer_sg --protocol tcp --port 80 --cidr 0.0.0.0/0)
+echo Liberada a porta 80 vinda da internet
 
 #Criando Security Group para os servidores de aplicação
 app_srv_sg=$(aws ec2 create-security-group --group-name "SG_Aplicacao" --description "Security Group para mermitir trafego da internet para porta 22" --vpc-id $vpc --query GroupId --output text)
@@ -140,9 +140,9 @@ echo Criado Security Group para os servidores de aplicação
 null=$(aws ec2 authorize-security-group-ingress --group-id $app_srv_sg --protocol tcp --port 22 --cidr 0.0.0.0/0)
 echo Liberada a porta 22 vinda da internet
 
-#Liberando porta 8000
-null=$(aws ec2 authorize-security-group-ingress --group-id $app_srv_sg --protocol tcp --port 8000 --source-group $load_balancer_sg) #--cidr 0.0.0.0/0
-echo Liberada a porta 8000 vinda de load_balancer_sg
+#Liberando porta 80
+null=$(aws ec2 authorize-security-group-ingress --group-id $app_srv_sg --protocol tcp --port 80 --source-group $load_balancer_sg) #--cidr 0.0.0.0/0
+echo Liberada a porta 80 vinda de load_balancer_sg
 
 echo ''
 echo '#################################### CRIANDO INSTÂNCIAS ####################################'
@@ -172,7 +172,7 @@ load_balance=$(aws elbv2 describe-load-balancers | grep LoadBalancerArn | cut -f
 echo Load Balancer Criado
 
 #Criando Target group
-target_group=$(aws elbv2 create-target-group --name ecommerce-target --protocol HTTP --port 8000 --vpc-id $vpc | grep TargetGroupArn | cut -f 4 -d '"')
+target_group=$(aws elbv2 create-target-group --name ecommerce-target --protocol HTTP --port 80 --vpc-id $vpc | grep TargetGroupArn | cut -f 4 -d '"')
 echo Target group Criado
 
 #Adicionando instâncias ao target do load balance
@@ -180,7 +180,7 @@ null=$(aws elbv2 register-targets --target-group-arn $target_group --targets Id=
 echo Instâncias adicionadas ao target load balancer
 
 #Criando Listener
-listener=$(aws elbv2 create-listener --load-balancer-arn $load_balance --protocol HTTP --port 8000 --default-actions Type=forward,TargetGroupArn=$target_group | grep ListenerArn | cut -f 4 -d '"')
+listener=$(aws elbv2 create-listener --load-balancer-arn $load_balance --protocol HTTP --port 80 --default-actions Type=forward,TargetGroupArn=$target_group | grep ListenerArn | cut -f 4 -d '"')
 echo Listener Criado
 
 echo '########################### APLICATION LOAD BALANCER FINALIZADO ####################################'
